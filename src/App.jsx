@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
+import Checkout from "./Components/Checkout";
 
 const BASE_URL = "https://library-api.uidotdev.workers.dev";
 
@@ -22,11 +23,13 @@ function useBook(bookId) {
   return useQuery({
     queryKey: ["bookData", bookId],
     queryFn: () => getData(bookId),
+    staleTime: 5000,
   });
 }
 
 function Book({ bookId }) {
-  const { data, isLoading, isError } = useBook(bookId);
+  const { data, isLoading, isError, refetch, isStale, isFetching } =
+    useBook(bookId);
 
   if (isLoading) {
     return <Loading />;
@@ -47,6 +50,7 @@ function Book({ bookId }) {
         <h2 className="book-title">{data.title}</h2>
         <small className="book-author">{data.authors.join(", ")}</small>
       </div>
+      <Checkout info={{ refetch, isStale, isFetching }} />
     </main>
   );
 }
