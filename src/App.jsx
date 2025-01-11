@@ -1,22 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 
+const BASE_URL = "https://library-api.uidotdev.workers.dev";
+
 async function getData() {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // see how many times this executes when rejects
-      reject({
-        title: "The Hobbit",
-        authors: ["J.R.R. Tolkien"],
-        thumbnail: "https://ui.dev/images/courses/query/hobbit.jpg",
-      });
-    }, 1000);
-  });
+  const url = `${BASE_URL}/books/pD6arNyKyi8C`;
+  const response = await fetch(url);
+
+  // If an error is thrown then isError is set to true
+  if (!response.ok) {
+    throw new Error("Something went wrong");
+  }
+
+  const data = response.json();
+  return data;
 }
 
 function useBook() {
   return useQuery({
     queryKey: ["bookData"],
-    queryFn: () => getData(),
+    queryFn: getData,
   });
 }
 
